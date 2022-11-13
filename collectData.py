@@ -4,6 +4,7 @@ import csv
 import multiprocessing
 import pandas as pd
 import numpy as np
+from gestureFunctions import *
 
 # Read serial data from the Arduino.
 # Put the read data (one row at a time) into a pipe for the processData
@@ -44,6 +45,8 @@ def processData(pipeConnection, fileName):
     currentTime = 0 # Timestamp of current datapoint
     touchedPrevState = [False, False, False, False, False]
     touchedState = []
+    twistPrevState = False
+    twistState = False
     
 
     while True:
@@ -92,12 +95,22 @@ def processData(pipeConnection, fileName):
                     baselinesSet = True
                     print("Ready")
 
-                # Check for touches:
+                
                 if baselinesSet:
+                    # Check for touches:
                     touchedState = numpyArray[-1, 1:6] < (baselines[1:6] - 3)
                     if not all(touchedState == touchedPrevState):
                         print(touchedState)
                         touchedPrevState = touchedState
+
+                    # Check for twists:
+                    twistState = twistDetect(numpyArray, baselines, twistWindow = 10)
+                    if twistState != twistPrevState:
+                        print("Twist: " + str(twistState))
+                        twistPrevState = twistState
+
+
+
 
                     
 
