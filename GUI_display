@@ -1,6 +1,6 @@
 import PySimpleGUI as sg
 import random
-import IOBraid_pinch_grab
+import gestureFunctions
 
 
 def make_graph():
@@ -19,7 +19,7 @@ def make_graph():
     graph = window['-GRAPH-']       # type: sg.Graph
 
     while True:
-        TF_array = IOBraid_pinch_grab.pinch()
+        TF_array = gestureFunctions.pinch()
         graph.erase()
         for i in range(5):
             if TF_array[i]:
