@@ -5,6 +5,7 @@ import multiprocessing
 import pandas as pd
 import numpy as np
 from gestureFunctions import *
+import GUI_display
 
 # Read serial data from the Arduino.
 # Put the read data (one row at a time) into a pipe for the processData
@@ -148,3 +149,5 @@ if __name__ == "__main__": # This is the main process.
     # Wait for processes to end:
     process_processData.join() # This one should terminate first because getData requests user input
     process_getData.join()
+    
+    GUI_display.make_graph()
