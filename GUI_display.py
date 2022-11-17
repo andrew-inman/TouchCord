@@ -1,9 +1,9 @@
 import PySimpleGUI as sg
 import random
-import IOBraid_pinch_grab
+import gestureFunctions
 
 
-def make_graph():
+def make_graph(data, baseline, beadCount = 5):
     BAR_WIDTH = 50      # width of each bar
     BAR_SPACING = 75    # space between each bar
     EDGE_OFFSET = 3     # offset from the left edge for first bar
@@ -19,7 +19,7 @@ def make_graph():
     graph = window['-GRAPH-']       # type: sg.Graph
 
     while True:
-        TF_array = IOBraid_pinch_grab.pinch()
+        TF_array = gestureFunctions.pinchDetect(data, baseline, beadCount)
         graph.erase()
         for i in range(5):
             if TF_array[i]:

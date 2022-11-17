@@ -11,7 +11,7 @@ import GUI_display
 # Put the read data (one row at a time) into a pipe for the processData
 def getData(pipeConnection):
     # Set up arduino
-    arduinoSerialObject = serial.Serial(port = 'COM4', baudrate = 9600, timeout = 1)
+    arduinoSerialObject = serial.Serial(port = 'COM11', baudrate = 9600, timeout = 1)
     
     while True:
         try:
@@ -48,6 +48,8 @@ def processData(pipeConnection, fileName):
     touchedState = []
     twistPrevState = False
     twistState = False
+    grabState = False
+    beadCount = 5
     
 
     while True:
@@ -98,11 +100,15 @@ def processData(pipeConnection, fileName):
 
                 
                 if baselinesSet:
-                    # Check for touches:
-                    touchedState = numpyArray[-1, 1:6] < (baselines[1:6] - 3)
+                    # Check for pinches:
+                    touchedState = pinchDetect(numpyArray, baselines, beadCount)
                     if not all(touchedState == touchedPrevState):
                         print(touchedState)
                         touchedPrevState = touchedState
+
+                    # Check for grabs:
+                    grabState = grab(numpyArray, baselines, beadCount)
+                    print()
 
                     # Check for twists:
                     twistState = twistDetect(numpyArray, baselines, twistWindow = 10)
@@ -110,10 +116,11 @@ def processData(pipeConnection, fileName):
                         print("Twist: " + str(twistState))
                         twistPrevState = twistState
 
+                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState))
 
+                    #GUI_display.make_graph(numpyArray, baselines, beadCount)
 
-
-                    
+     
 
             # Establish headers
             if newData[0] == 'Time(ms)': # Check that newData is the headers row
@@ -149,5 +156,3 @@ if __name__ == "__main__": # This is the main process.
     # Wait for processes to end:
     process_processData.join() # This one should terminate first because getData requests user input
     process_getData.join()
-    
-    GUI_display.make_graph()
