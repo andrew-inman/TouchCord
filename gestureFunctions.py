@@ -138,10 +138,10 @@ def slideDetect(data, baselines, w):
     else:
         return False
 
-slidedata = np.loadtxt('slides_11-14.csv', delimiter = ",", skiprows=1)
-baselines = (np.mean(slidedata, axis = 0, dtype=int))[1:6]
-print(slideDetect(slidedata,baselines, 185))
-print(slideDetect(slidedata,baselines, 127))
-print(slideDetect(slidedata,baselines, 453))
-print(slideDetect(slidedata,baselines, 500))
-print(slideDetect(slidedata,baselines, 5)) #random one
+#slidedata = np.loadtxt('slides_11-14.csv', delimiter = ",", skiprows=1)
+#baselines = (np.mean(slidedata, axis = 0, dtype=int))[1:6]
+#print(slideDetect(slidedata,baselines, 185))
+#print(slideDetect(slidedata,baselines, 127))
+#print(slideDetect(slidedata,baselines, 453))
+#print(slideDetect(slidedata,baselines, 500))
+#print(slideDetect(slidedata,baselines, 5)) #random one
