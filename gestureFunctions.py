@@ -103,15 +103,16 @@ def pinchDetect(data, baseline, beadCount = 5):
     touchedState = data[-1, 1:beadCount + 1] < (baseline[1:beadCount + 1] - 3)
     return touchedState
 
-def grab(data, baseline, beadCount = 5):
+def grab(data, baseline, beadCount =5):
     #get true false array created in pinch
     tf_array = pinchDetect(data, baseline, beadCount)
-    tf_array = np.array(tf_array)
     search_val = [True, True, True] #search for atleast 3 beads being touched
-    if len(np.where(tf_array == search_val)[0]):
-        return True
-    else:
-        return False
+    #print(tf_array[0])
+    for i in range(len(tf_array)-3):
+        if ((tf_array[i] and tf_array[i+1] and tf_array[i+2]) == True):
+            return True
+    return False
+
 
 # takes in data, 1d arr of baselines for each bead, and window start value
 def slideDetect(data, baselines, w):
@@ -137,10 +138,10 @@ def slideDetect(data, baselines, w):
     else:
         return False
 
-slidedata = np.loadtxt('slides_11-14.csv', delimiter = ",", skiprows=1)
-baselines = (np.mean(slidedata, axis = 0, dtype=int))[1:6]
-print(slideDetect(slidedata,baselines, 185))
-print(slideDetect(slidedata,baselines, 127))
-print(slideDetect(slidedata,baselines, 453))
-print(slideDetect(slidedata,baselines, 500))
-print(slideDetect(slidedata,baselines, 5)) #random one
+#slidedata = np.loadtxt('slides_11-14.csv', delimiter = ",", skiprows=1)
+#baselines = (np.mean(slidedata, axis = 0, dtype=int))[1:6]
+#print(slideDetect(slidedata,baselines, 185))
+#print(slideDetect(slidedata,baselines, 127))
+#print(slideDetect(slidedata,baselines, 453))
+#print(slideDetect(slidedata,baselines, 500))
+#print(slideDetect(slidedata,baselines, 5)) #random one
