@@ -112,3 +112,35 @@ def grab(data, baseline, beadCount = 5):
         return True
     else:
         return False
+
+# takes in data, 1d arr of baselines for each bead, and window start value
+def slideDetect(data, baselines, w):
+    smoothSlide = smooth(data, 3)
+    smoothSlide = (np.rint(smoothSlide)).astype(int)
+    # FOUR SUCESSIVE STRANDS
+    #window = slidedata[-1*5:, [1,2,3,4,5]]
+    # transition this to live --> -1*window +3,6,9,12 & window param will be the start of bead1
+    bead1 = np.array(smoothSlide[w:w+10, :][:,1])
+    bead2 = np.array(smoothSlide[w+3:w+13, :][:,2])
+    bead3 = np.array(smoothSlide[w+6:w+16, :][:,3])
+    bead4 = np.array(smoothSlide[w+9:w+19, :][:,4])
+    bead5 = np.array(smoothSlide[w+12:w+22, :][:,5])
+
+    bead_arr = np.column_stack((bead1,bead2, bead3, bead4, bead5))
+    amp = bead_arr - baselines
+    amt_below = np.cumsum(amp,axis=0)[-1]
+    print(amt_below)
+    # can edit this for slide up (pos) or slide down (neg)
+    state = amt_below <= -10 # also i originally had this at -15 but missed some
+    if len(np.where(state)[0]) >=3: # majority are bc depending on how person is sliding
+        return True
+    else:
+        return False
+
+slidedata = np.loadtxt('slides_11-14.csv', delimiter = ",", skiprows=1)
+baselines = (np.mean(slidedata, axis = 0, dtype=int))[1:6]
+print(slideDetect(slidedata,baselines, 185))
+print(slideDetect(slidedata,baselines, 127))
+print(slideDetect(slidedata,baselines, 453))
+print(slideDetect(slidedata,baselines, 500))
+print(slideDetect(slidedata,baselines, 5)) #random one
