@@ -49,7 +49,7 @@ def processData(pipeConnection, fileName):
     twistPrevState = False
     twistState = False
     grabState = False
-    beadCount = 5
+    beadCount = 9
     
 
     while True:
@@ -102,13 +102,12 @@ def processData(pipeConnection, fileName):
                 if baselinesSet:
                     # Check for pinches:
                     touchedState = pinchDetect(numpyArray, baselines, beadCount)
-                    if not all(touchedState == touchedPrevState):
-                        print(touchedState)
-                        touchedPrevState = touchedState
+                    #if not all(touchedState == touchedPrevState):
+                    #    print(touchedState)
+                    #    touchedPrevState = touchedState
 
                     # Check for grabs:
                     grabState = grab(numpyArray, baselines, beadCount)
-                    print()
 
                     # Check for twists:
                     twistState = twistDetect(numpyArray, baselines, twistWindow = 10)
