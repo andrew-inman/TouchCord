@@ -51,6 +51,16 @@ def processData(pipeConnection, fileName):
     grabState = False
     beadCount = 9
     
+    plt.style.use('fivethirtyeight')
+    y = [5,5,5,5,5,5,5,5,5]
+    fig, ax = plt.subplots()
+    plt.ion()
+    rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
+    plt.tight_layout()    
+    ax.set_xlabel("Beads")
+    ax.set_ylabel("Capacitance")
+    ax.set_title("Visual of Touched Beads in Interface")
+    
 
     while True:
         newData = pipeConnection.recv()
@@ -118,6 +128,14 @@ def processData(pipeConnection, fileName):
                     print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState))
 
                     #GUI_display.make_graph(numpyArray, baselines, beadCount)
+                    
+                    for rect in range(len(rects)):
+                        if (touchedState[rect]==True):
+                            rect.set_height(50)
+                        else:
+                            rect.set_height(5)
+                        fig.canvas.draw()
+                        plt.pause(0.001)
 
      
 
