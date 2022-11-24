@@ -110,7 +110,7 @@ def processData(pipeConnection, fileName):
                     grabState = grab(numpyArray, baselines, beadCount)
 
                     # Check for twists:
-                    twistState = twistDetect(numpyArray, baselines, twistWindow = 10)
+                    twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
                     if twistState != twistPrevState:
                         print("Twist: " + str(twistState))
                         twistPrevState = twistState

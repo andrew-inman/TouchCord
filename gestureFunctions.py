@@ -13,11 +13,11 @@ def smooth (data, window):
         output.append(thisColSmoothed)
     return np.array(output).T
 
-def twistDetect (data, baselines, twistWindow = 10, twistThreads = [6, 7, 8], verbose = False):
+def twistDetect (data, baselines, twistWindow = 10, twistThreads = [10, 11, 12], verbose = False):
         # twistThreads is the capacitor channel (number on the MPR121) + 1
     # Hyperparameters:
     smoothingWindow = 3 # How many samples for the moving average
-    twistThreshold = 0.9 # Threshold RMSSD required for twist detection
+    twistThreshold = 0.4 # Threshold RMSSD required for twist detection
     movingBaselineWindow = 6 # How many samples for the moving baseline
         # Working combinations:
             # In general, the closer the movingBaselineWindow to the smoothingWindow, the lower the difference (smoothedData - movingBaseline) would be (at the extreme, having these equal would reduce every point to 0 (because subtracting the same value)). This is why a larger threshold can be used with a larger movingBaselineWindow
@@ -34,6 +34,7 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [6, 7, 8], ve
         amplitudes[:,0] - amplitudes[:,2]
         ]).T
     smoothedAmplitudeDifferences = smooth(amplitudeDifferences, window = smoothingWindow)
+    #movingBaseline = np.average(amplitudeDifferences)
     movingBaseline = smooth(amplitudeDifferences, window = movingBaselineWindow) # Smooth over a large window in order to get a moving baseline for the amplitude differences. This will help to distinguish between twists and static grabs.
 
     squares = np.square(smoothedAmplitudeDifferences - movingBaseline)
@@ -43,7 +44,9 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [6, 7, 8], ve
     #print(rootMeanSquare)
     if verbose:
         print(rootMeanSquare)
-        plt.plot(data[(-1*twistWindow):,0], smoothedAmplitudeDifferences)
+        #plt.plot(data[(-1*twistWindow):,0], smoothedAmplitudeDifferences)
+        #plt.plot(data[(-1*twistWindow):,0], movingBaseline)
+        plt.plot(data[(-1*twistWindow):,0], smoothedAmplitudeDifferences - movingBaseline)
         plt.show()
 
     if np.average(rootMeanSquare) > twistThreshold:
@@ -54,12 +57,11 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [6, 7, 8], ve
         
     
 
+#testData = np.loadtxt('twistExampleForDevelopment.csv', delimiter = ",")
+#testData = np.loadtxt('dev_3twist_3pinch_format.csv', delimiter = ",")
 
-# testData = np.loadtxt('twistExampleForDevelopment.csv', delimiter = ",")
-# testData = np.loadtxt('dev_3twist_3pinch_format.csv', delimiter = ",")
-
-# baselines = np.array([0, 0, 0, 0, 0, 0, 129, 137, 148])
-# twistDetect(testData[300:340], baselines, twistWindow = 40)
+#baselines = np.array([0, 0, 0, 0, 0, 0, 129, 137, 148])
+#twistDetect(testData[300:340], baselines, twistWindow = 40)
 
 
 
@@ -100,7 +102,7 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [6, 7, 8], ve
 #     return(TF_array[:,whereArr])
 
 def pinchDetect(data, baseline, beadCount = 5):
-    touchedState = data[-1, 1:beadCount + 1] < (baseline[1:beadCount + 1] - 3)
+    touchedState = data[-1, 1:beadCount + 1] < (baseline[1:beadCount + 1] - 2)
     return touchedState
 
 def grab(data, baseline, beadCount =5):
