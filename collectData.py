@@ -128,18 +128,18 @@ def processData(pipeConnection, fileName):
                         print("Twist: " + str(twistState))
                         twistPrevState = twistState
 
-                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState) + "Slide: " + str(slideState))
+                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState) + " Slide: " + str(slideState))
 
                     #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
-                    for i in range(len(rects)):
-                        if (touchedState[i]==True):
-                            rects[i].set_height(50)
-                        else:
-                            rects[i].set_height(5)
-                    fig.canvas.draw()
-                    fig.canvas.flush_events()
-                    time.sleep(0.1)
+                    #for i in range(len(rects)):
+                    #    if (touchedState[i]==True):
+                    #        rects[i].set_height(50)
+                    #    else:
+                    #        rects[i].set_height(5)
+                    #fig.canvas.draw()
+                    #fig.canvas.flush_events()
+                    #time.sleep(0.1)
 
      
 

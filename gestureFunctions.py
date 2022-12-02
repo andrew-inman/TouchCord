@@ -64,7 +64,7 @@ def slideDet(data):
         #print(true_idx)
         if np.size(true_idx):
             true_idx = np.amax(true_idx) + 1 #bc 0 idx
-            avg = np.sum(true_idx) / 5
+            avg = np.sum(true_idx) / 9
             #print(avg)
             # check to see if increasing from last
             if avg >= prev_avg:
