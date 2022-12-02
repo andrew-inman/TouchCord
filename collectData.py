@@ -127,7 +127,7 @@ def processData(pipeConnection, fileName):
 
                     print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState))
 
-                    GUI_display.make_graph(numpyArray, baselines, beadCount)
+                    #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
                     for i in range(len(rects)):
                         if (touchedState[i]==True):
