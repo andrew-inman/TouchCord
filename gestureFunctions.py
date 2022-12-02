@@ -55,7 +55,36 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [10, 11, 12],
         return False
         
         
-    
+def slideDet(data):
+    prev_avg = -1
+    inc = 0
+    for row in data:
+        row = np.asarray(row)
+        true_idx = np.where(row)
+        #print(true_idx)
+        if np.size(true_idx):
+            true_idx = np.amax(true_idx) + 1 #bc 0 idx
+            avg = np.sum(true_idx) / 5
+            #print(avg)
+            # check to see if increasing from last
+            if avg >= prev_avg:
+                inc += 1
+                slide = True
+                prev_avg = avg
+            else: # decreasing so start new window
+                slide = False
+                inc = 0
+                prev_avg = -1
+        if inc >= 5: # hit end of window
+            slide = True
+            #print(inc)
+            #print(slide)
+            inc = 0
+            #return slide
+    slide = False
+    #print(inc)
+    #print(slide)
+    return slide  
 
 #testData = np.loadtxt('twistExampleForDevelopment.csv', delimiter = ",")
 #testData = np.loadtxt('dev_3twist_3pinch_format.csv', delimiter = ",")
