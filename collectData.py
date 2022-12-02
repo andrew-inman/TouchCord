@@ -55,7 +55,7 @@ def processData(pipeConnection, fileName):
     y = [5,5,5,5,5,5,5,5,5]
     fig, ax = plt.subplots()
     plt.ion()
-    rects, = ax.bar(range(beadCount), y, align= 'center', animated = True)
+    rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
     plt.tight_layout()    
     ax.set_xlabel("Beads")
     ax.set_ylabel("Capacitance")
