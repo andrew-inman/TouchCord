@@ -119,13 +119,16 @@ def processData(pipeConnection, fileName):
                     # Check for grabs:
                     grabState = grab(numpyArray, baselines, beadCount)
 
+                    # Check for slides:
+                    slideState = slideDet(numpyArray[-20:])
+
                     # Check for twists:
                     twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
                     if twistState != twistPrevState:
                         print("Twist: " + str(twistState))
                         twistPrevState = twistState
 
-                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState))
+                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState) + "Slide: " + str(slideState))
 
                     #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
