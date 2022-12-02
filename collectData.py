@@ -55,7 +55,7 @@ def processData(pipeConnection, fileName):
     y = [5,5,5,5,5,5,5,5,5]
     fig, ax = plt.subplots()
     plt.ion()
-    rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
+    rects, = ax.bar(range(beadCount), y, align= 'center', animated = True)
     plt.tight_layout()    
     ax.set_xlabel("Beads")
     ax.set_ylabel("Capacitance")
@@ -127,15 +127,16 @@ def processData(pipeConnection, fileName):
 
                     print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState))
 
-                    #GUI_display.make_graph(numpyArray, baselines, beadCount)
+                    GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
-                    #for rect in range(len(rects)):
-                    #    if (touchedState[rect]==True):
-                    #        rect.set_height(50)
-                    #    else:
-                    #        rect.set_height(5)
-                    #    fig.canvas.draw()
-                    #    plt.pause(0.001)
+                    for i in range(len(rects)):
+                        if (touchedState[i]==True):
+                            rects[i].set_height(50)
+                        else:
+                            rects[i].set_height(5)
+                    figure.canvas.draw()
+                    figure.canvas.flush_events()
+                    time.sleep(0.1)
 
      
 
