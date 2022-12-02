@@ -134,8 +134,8 @@ def processData(pipeConnection, fileName):
                             rects[i].set_height(50)
                         else:
                             rects[i].set_height(5)
-                    figure.canvas.draw()
-                    figure.canvas.flush_events()
+                    fig.canvas.draw()
+                    fig.canvas.flush_events()
                     time.sleep(0.1)
 
      
