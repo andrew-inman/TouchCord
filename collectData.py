@@ -129,13 +129,13 @@ def processData(pipeConnection, fileName):
 
                     #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
-                    for rect in range(len(rects)):
-                        if (touchedState[rect]==True):
-                            rect.set_height(50)
-                        else:
-                            rect.set_height(5)
-                        fig.canvas.draw()
-                        plt.pause(0.001)
+                    #for rect in range(len(rects)):
+                    #    if (touchedState[rect]==True):
+                    #        rect.set_height(50)
+                    #    else:
+                    #        rect.set_height(5)
+                    #    fig.canvas.draw()
+                    #    plt.pause(0.001)
 
      
 
