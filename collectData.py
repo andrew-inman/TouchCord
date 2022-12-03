@@ -11,7 +11,7 @@ import GUI_display
 # Put the read data (one row at a time) into a pipe for the processData
 def getData(pipeConnection):
     # Set up arduino
-    arduinoSerialObject = serial.Serial(port = 'COM11', baudrate = 9600, timeout = 1)
+    arduinoSerialObject = serial.Serial(port = 'COM3', baudrate = 9600, timeout = 1)
     
     while True:
         try:
@@ -39,7 +39,7 @@ def processData(pipeConnection, fileName):
     columns = 0
 
     # Data processing parameters:
-    timeForBaseline = 3000 # Milliseconds from beginning of program to average over to get baselines
+    timeForBaseline = 50 # Milliseconds from beginning of program to average over to get baselines
     baselines = [] # Baseline values for each capacitor
     baselinesSet = False
     numpyArrayStarted = False
@@ -51,15 +51,15 @@ def processData(pipeConnection, fileName):
     grabState = False
     beadCount = 9
     
-    plt.style.use('fivethirtyeight')
-    y = [5,5,5,5,5,5,5,5,5]
-    fig, ax = plt.subplots()
-    plt.ion()
-    rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
-    plt.tight_layout()    
-    ax.set_xlabel("Beads")
-    ax.set_ylabel("Capacitance")
-    ax.set_title("Visual of Touched Beads in Interface")
+    # plt.style.use('fivethirtyeight')
+    # y = [5,5,5,5,5,5,5,5,5]
+    # fig, ax = plt.subplots()
+    # plt.ion()
+    # rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
+    # plt.tight_layout()    
+    # ax.set_xlabel("Beads")
+    # ax.set_ylabel("Capacitance")
+    # ax.set_title("Visual of Touched Beads in Interface")
     
 
     while True:
@@ -80,7 +80,7 @@ def processData(pipeConnection, fileName):
             dataArray.append(newData) # Keep this. It is what the csv writer uses.
 
             # The Pandas tail function could be useful
-
+            #print("inside else")
 
             if headers: # Only do the following after the headers row has been read
                 # Make/add to numeric numpy array
@@ -93,7 +93,6 @@ def processData(pipeConnection, fileName):
                     numpyArrayStarted = True
                 else:
                     numpyArray = np.append(numpyArray, numericData, axis = 0)
-
                 ####################################################
                 ### Data processing code goes below this line. ###
                 # This will run once for every sensor readout (of all capacitors)
@@ -123,23 +122,23 @@ def processData(pipeConnection, fileName):
                     slideState = slideDet(numpyArray[-20:])
 
                     # Check for twists:
-                    twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
-                    if twistState != twistPrevState:
-                        print("Twist: " + str(twistState))
-                        twistPrevState = twistState
-
-                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Twist: " + str(twistState) + "Slide: " + str(slideState))
+                    # twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
+                    # if twistState != twistPrevState:
+                    #     print("Twist: " + str(twistState))
+                    #     twistPrevState = twistState
+                    # + " Twist: " + str(twistState) 
+                    print(str(touchedState) + " Grabbed: " + str(grabState) + "Slide: " + str(slideState))
 
                     #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
-                    for i in range(len(rects)):
-                        if (touchedState[i]==True):
-                            rects[i].set_height(50)
-                        else:
-                            rects[i].set_height(5)
-                    fig.canvas.draw()
-                    fig.canvas.flush_events()
-                    time.sleep(0.1)
+                    # for i in range(len(rects)):
+                    #     if (touchedState[i]==True):
+                    #         rects[i].set_height(50)
+                    #     else:
+                    #         rects[i].set_height(5)
+                    # fig.canvas.draw()
+                    # fig.canvas.flush_events()
+                    # time.sleep(0.1)
 
      
 
@@ -169,7 +168,6 @@ if __name__ == "__main__": # This is the main process.
     # Create processes:
     process_getData = multiprocessing.Process(target=getData, args=(connection_getData,))
     process_processData = multiprocessing.Process(target=processData, args=(connection_processData,fileName))
-
     # Start processes:
     process_getData.start()
     process_processData.start()
