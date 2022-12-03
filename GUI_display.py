@@ -1,6 +1,32 @@
 import PySimpleGUI as sg
 import random
 import gestureFunctions
+import matplotlib.pyplot as plt
+import numpy as np
+import matplotlib.animation as animation
+
+
+# indices = np.array([1,2,3,4,5,6,7,8,9])
+# fig = plt.figure(figsize = (10, 5))
+# TF_array = [0]*indices
+# plt.bar(indices, TF_array, color =['black','red'], width = 0.4)
+# plt.xlabel("Beads")
+# plt.ylabel("Current State")
+# plt.title('Touched Beads in the I/O Beads')
+
+# #     (df.pivot(index='cake',columns='has_chocolate',values='sales')
+# #    .plot.bar(stacked=True)
+# #)
+
+# def animate(TF_array):
+#     TF_array.append(TF_array)
+
+# ani = animation.FuncAnimation(fig,
+#     animate,
+#     fargs=(TF_array),
+#     interval=50,
+#     blit=True)
+# plt.show(block=False)
 
 
 def make_graph(data, baseline, beadCount = 5):

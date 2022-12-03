@@ -55,80 +55,34 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [10, 11, 12],
         return False
         
         
-def slideDet(data):
-    prev_avg = -1
-    inc = 0
+def slideDet(data, prev_slide_avg, inc_slide, baselines, beadCount):
+    data = pinchDetect(data, baselines, beadCount)
     for row in data:
-        row = np.asarray(row)
-        true_idx = np.where(row)
-        #print(true_idx)
+        x = np.where(row==True)
+        for val in x:
+            true_idx = np.array(val)
         if np.size(true_idx):
             true_idx = np.amax(true_idx) + 1 #bc 0 idx
-            avg = np.sum(true_idx) / 9
-            #print(avg)
+            avg = true_idx / 8
             # check to see if increasing from last
-            if avg >= prev_avg:
-                inc += 1
+            if avg == 0:
+                continue
+            if avg >= prev_slide_avg:
+                inc_slide += 1
                 slide = True
-                prev_avg = avg
+                prev_slide_avg = avg
             else: # decreasing so start new window
                 slide = False
-                inc = 0
-                prev_avg = -1
-        if inc >= 5: # hit end of window
+                inc_slide = 0
+                prev_slide_avg = -1
+        if inc_slide >= 5: # hit end of window
             slide = True
-            #print(inc)
-            #print(slide)
-            inc = 0
+            inc_slide = 0
             return slide
     slide = False
-    #print(inc)
-    #print(slide)
-    return slide  
-
-#testData = np.loadtxt('twistExampleForDevelopment.csv', delimiter = ",")
-#testData = np.loadtxt('dev_3twist_3pinch_format.csv', delimiter = ",")
-
-#baselines = np.array([0, 0, 0, 0, 0, 0, 129, 137, 148])
-#twistDetect(testData[300:340], baselines, twistWindow = 40)
+    return slide
 
 
-
-#### This pinch code (commented out) doesn't run in real time yet. Replaced with pinchDetect()
-# def pinch():
-#     # ERROR in reading data when there's an empty val 
-#     df = pd.read_csv("pinches_11-2.csv").fillna(0)
-#     time = df['Time(ms)']
-#     # citation: https://stackoverflow.com/questions/24342047/count-consecutive-occurences-of-values-varying-in-length-in-a-numpy-array
-        
-
-#     TF_array = np.array(time)
-#     # only care about cap0-cap4 (wrapped around beads)
-#     for i in range(1, 6):
-#         # use second val as threshold
-#         threshold = df.iloc[3,i] #could also use .mean()
-#         og_stringCol = (df.loc[:,'Cap'+str(i-1)]).to_numpy()
-#         print('****Cap'+str(i-1))
-#         # val = true if under threshold
-#         maskOfCol = og_stringCol < threshold -2
-#         TF_array = np.vstack((TF_array, maskOfCol))
-        
-#         # want to find chunks of true for each string
-#         condition = maskOfCol
-#         # this finds the size of the true chunks
-#         print(np.diff(np.where(np.concatenate(([condition[0]],
-#                                         condition[:-1] != condition[1:],
-#                                         [True])))
-#                                         [0])[::2])
-#         # this finds the indexes of switch T/F
-#         whereArr = np.where(np.concatenate(([condition[0]],
-#                                         condition[:-1] != condition[1:],
-#                                         [True])))[0]
-#         # had to take out last val since it was OOB
-#         whereArr = whereArr[:-1]
-#         # these are the chunks of time of true (printed just to see)
-#     numpy.savetxt('TF_array.csv',TF_array,fmt="%d", delimiter=',')
-#     return(TF_array[:,whereArr])
 
 def pinchDetect(data, baseline, beadCount = 5):
     touchedState = data[-1, 1:beadCount + 1] < (baseline[1:beadCount + 1] - 2)

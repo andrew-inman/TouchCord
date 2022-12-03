@@ -50,6 +50,8 @@ def processData(pipeConnection, fileName):
     twistState = False
     grabState = False
     beadCount = 9
+    prev_slide_avg = -1
+    inc_slide = 0
     
     # plt.style.use('fivethirtyeight')
     # y = [5,5,5,5,5,5,5,5,5]
@@ -119,7 +121,7 @@ def processData(pipeConnection, fileName):
                     grabState = grab(numpyArray, baselines, beadCount)
 
                     # Check for slides:
-                    slideState = slideDet(numpyArray[-20:])
+                    slideState = slideDet(numpyArray[-30:], prev_slide_avg, inc_slide,baselines,beadCount)
 
                     # Check for twists:
                     # twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
