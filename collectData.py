@@ -11,7 +11,7 @@ import GUI_display
 # Put the read data (one row at a time) into a pipe for the processData
 def getData(pipeConnection):
     # Set up arduino
-    arduinoSerialObject = serial.Serial(port = 'COM3', baudrate = 9600, timeout = 1)
+    arduinoSerialObject = serial.Serial(port = 'COM11', baudrate = 9600, timeout = 1)
     
     while True:
         try:
@@ -39,7 +39,7 @@ def processData(pipeConnection, fileName):
     columns = 0
 
     # Data processing parameters:
-    timeForBaseline = 50 # Milliseconds from beginning of program to average over to get baselines
+    timeForBaseline = 5000 # Milliseconds from beginning of program to average over to get baselines
     baselines = [] # Baseline values for each capacitor
     baselinesSet = False
     numpyArrayStarted = False
@@ -124,12 +124,12 @@ def processData(pipeConnection, fileName):
                     slideState = slideDet(numpyArray[-30:], prev_slide_avg, inc_slide,baselines,beadCount)
 
                     # Check for twists:
-                    # twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
-                    # if twistState != twistPrevState:
-                    #     print("Twist: " + str(twistState))
-                    #     twistPrevState = twistState
-                    # + " Twist: " + str(twistState) 
-                    print(str(touchedState) + " Grabbed: " + str(grabState) + "Slide: " + str(slideState))
+                    twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
+                    #if twistState != twistPrevState:
+                    #    print("Twist: " + str(twistState))
+                    #    twistPrevState = twistState
+                    #+ " Twist: " + str(twistState) 
+                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState))
 
                     #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
