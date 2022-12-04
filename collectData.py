@@ -55,9 +55,9 @@ def processData(pipeConnection, fileName):
     
     plt.style.use('fivethirtyeight')
     y = [5,5,5,5,5,5,5,5,5]
-    fig, ax = plt.subplots()
+    fig = plt.figure(figsize = (10, 5))
     plt.ion()
-    rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
+    rects = plt.bar(range(beadCount), y, align= 'center', animated = True)
     plt.tight_layout()    
     fig.canvas.draw()
     ax.set_xlabel("Beads")
@@ -138,7 +138,6 @@ def processData(pipeConnection, fileName):
                             rects[i].set_height(50)
                         else:
                             rects[i].set_height(5)
-                    plt.pause(0.001)
 
      
 
