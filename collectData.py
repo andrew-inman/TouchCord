@@ -5,7 +5,7 @@ import multiprocessing
 import pandas as pd
 import numpy as np
 from gestureFunctions import *
-import GUI_display
+import pylab
 
 # Read serial data from the Arduino.
 # Put the read data (one row at a time) into a pipe for the processData
@@ -53,15 +53,15 @@ def processData(pipeConnection, fileName):
     prev_slide_avg = -1
     inc_slide = 0
     
-    # plt.style.use('fivethirtyeight')
-    # y = [5,5,5,5,5,5,5,5,5]
-    # fig, ax = plt.subplots()
-    # plt.ion()
-    # rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
-    # plt.tight_layout()    
-    # ax.set_xlabel("Beads")
-    # ax.set_ylabel("Capacitance")
-    # ax.set_title("Visual of Touched Beads in Interface")
+    plt.style.use('fivethirtyeight')
+    y = [5,5,5,5,5,5,5,5,5]
+    fig, ax = plt.subplots()
+    plt.ion()
+    rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
+    plt.tight_layout()    
+    ax.set_xlabel("Beads")
+    ax.set_ylabel("Capacitance")
+    ax.set_title("Visual of Touched Beads in Interface")
     
 
     while True:
@@ -131,16 +131,15 @@ def processData(pipeConnection, fileName):
                     #+ " Twist: " + str(twistState) 
                     print(str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState))
 
-                    #GUI_display.make_graph(numpyArray, baselines, beadCount)
                     
-                    # for i in range(len(rects)):
-                    #     if (touchedState[i]==True):
-                    #         rects[i].set_height(50)
-                    #     else:
-                    #         rects[i].set_height(5)
-                    # fig.canvas.draw()
-                    # fig.canvas.flush_events()
-                    # time.sleep(0.1)
+                    for i in range(len(rects)):
+                        if (touchedState[i]==True):
+                            rects[i].set_height(50)
+                        else:
+                            rects[i].set_height(5)
+                    fig.canvas.draw()
+                    fig.canvas.flush_events()
+                    time.sleep(1)
 
      
 
