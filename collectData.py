@@ -53,17 +53,8 @@ def processData(pipeConnection, fileName):
     prev_slide_avg = -1
     inc_slide = 0
     
-    plt.style.use('fivethirtyeight')
-    y = [5,5,5,5,5,5,5,5,5]
-    fig = plt.figure(figsize = (10, 5))
-    plt.ion()
-    rects = plt.bar(range(beadCount), y, align= 'center', animated = True)
-    plt.tight_layout()    
-    fig.canvas.draw()
-    plt.set_xlabel("Beads")
-    plt.set_ylabel("Capacitance")
-    plt.set_title("Visual of Touched Beads in Interface")
-    plt.show()
+    fig, ax = plt.subplots()
+    rects = ax.bar(range(beadCount), np.ones(beadCount)*50) 
 
     while True:
         newData = pipeConnection.recv()
@@ -138,7 +129,8 @@ def processData(pipeConnection, fileName):
                             rects[i].set_height(50)
                         else:
                             rects[i].set_height(5)
-
+                    fig.canvas.draw()
+                    plt.pause(0.001)
      
 
             # Establish headers
