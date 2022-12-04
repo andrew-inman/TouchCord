@@ -60,9 +60,9 @@ def processData(pipeConnection, fileName):
     rects = plt.bar(range(beadCount), y, align= 'center', animated = True)
     plt.tight_layout()    
     fig.canvas.draw()
-    ax.set_xlabel("Beads")
-    ax.set_ylabel("Capacitance")
-    ax.set_title("Visual of Touched Beads in Interface")
+    plt.set_xlabel("Beads")
+    plt.set_ylabel("Capacitance")
+    plt.set_title("Visual of Touched Beads in Interface")
     plt.show()
 
     while True:
