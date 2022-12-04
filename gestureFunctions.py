@@ -62,7 +62,7 @@ def slideDet(data, prev_slide_avg, inc_slide, baselines, beadCount):
         for val in x:
             true_idx = np.array(val)
         if np.size(true_idx):
-            true_idx = np.amax(true_idx) + 1 #bc 0 idx
+            true_idx = np.sum(true_idx) + 1 #bc 0 idx
             avg = true_idx / 8
             # check to see if increasing from last
             if avg == 0:

@@ -6,6 +6,7 @@ import pandas as pd
 import numpy as np
 from gestureFunctions import *
 from BlitManager import *
+from sys import stdout
 
 # Read serial data from the Arduino.
 # Put the read data (one row at a time) into a pipe for the processData
@@ -113,7 +114,7 @@ def processData(pipeConnection, fileName):
                     grabState = grab(numpyArray, baselines, beadCount)
 
                     # Check for slides:
-                    slideState = slideDet(numpyArray[-30:], prev_slide_avg, inc_slide,baselines,beadCount)
+                    slideState = slideDet(numpyArray[-10:], prev_slide_avg, inc_slide,baselines,beadCount)
 
                     # Check for twists:
                     twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
@@ -121,7 +122,9 @@ def processData(pipeConnection, fileName):
                     #    print("Twist: " + str(twistState))
                     #    twistPrevState = twistState
                     #+ " Twist: " + str(twistState) 
-                    print(str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState))
+                    print("\r" + str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState), end = "")
+                    stdout.flush()
+                    stdout.write("\n")
 
                     # reset the background back in the canvas state, screen unchanged
                     # fig.canvas.restore_region(bg)
