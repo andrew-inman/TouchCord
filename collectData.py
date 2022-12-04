@@ -12,7 +12,7 @@ from sys import stdout
 # Put the read data (one row at a time) into a pipe for the processData
 def getData(pipeConnection):
     # Set up arduino
-    arduinoSerialObject = serial.Serial(port = 'COM11', baudrate = 9600, timeout = 1)
+    arduinoSerialObject = serial.Serial(port = 'COM3', baudrate = 9600, timeout = 1)
     
     while True:
         try:
@@ -114,15 +114,21 @@ def processData(pipeConnection, fileName):
                     grabState = grab(numpyArray, baselines, beadCount)
 
                     # Check for slides:
-                    slideState = slideDet(numpyArray[-10:], prev_slide_avg, inc_slide,baselines,beadCount)
-
+                    #slideState = slideDet(numpyArray[-10:], prev_slide_avg, inc_slide,baselines,beadCount)
+                    inc_slide = slideDet(numpyArray[-10:], prev_slide_avg, inc_slide,baselines,beadCount)
+                    if inc_slide >= 5:
+                        slide = True
+                        inc_slide = 0
+                    else:
+                        slide = False
+                    #slideState = slideDet(touchedState, prev_slide_avg, inc_slide,baselines,beadCount)
                     # Check for twists:
                     twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
                     #if twistState != twistPrevState:
                     #    print("Twist: " + str(twistState))
                     #    twistPrevState = twistState
-                    #+ " Twist: " + str(twistState) 
-                    print("\r" + str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState), end = "")
+                    #+ " Twist: " + str(twistState)
+                    print("\r" + str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slide) + " Twist: " + str(twistState), end = "")
                     stdout.flush()
                     stdout.write("\n")
 

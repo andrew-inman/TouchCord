@@ -57,30 +57,26 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [10, 11, 12],
         
 def slideDet(data, prev_slide_avg, inc_slide, baselines, beadCount):
     data = pinchDetect(data, baselines, beadCount)
-    for row in data:
-        x = np.where(row==True)
-        for val in x:
-            true_idx = np.array(val)
-        if np.size(true_idx):
-            true_idx = np.sum(true_idx) + 1 #bc 0 idx
-            avg = true_idx / 8
-            # check to see if increasing from last
-            if avg == 0:
-                continue
-            if avg >= prev_slide_avg:
-                inc_slide += 1
-                slide = True
-                prev_slide_avg = avg
-            else: # decreasing so start new window
-                slide = False
-                inc_slide = 0
-                prev_slide_avg = -1
-        if inc_slide >= 5: # hit end of window
-            slide = True
+    if (inc_slide == 0):
+        prev_slide_avg = -1
+    x = np.where(data==True)
+    for val in x:
+        true_idx = np.array(val)
+    if np.size(true_idx):
+        true_idx = np.amax(true_idx) + 1 #bc 0 idx
+        avg = true_idx*9 / 9
+        # check to see if increasing from last
+        if avg == 0:
+            return
+        if avg >= prev_slide_avg:
+            inc_slide += 1
+            prev_slide_avg = avg
+            return inc_slide
+        else: # decreasing so start new window
             inc_slide = 0
-            return slide
-    slide = False
-    return slide
+            prev_slide_avg = -1
+            return inc_slide
+    return inc_slide
 
 
 
