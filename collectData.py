@@ -53,9 +53,9 @@ def processData(pipeConnection, fileName):
     prev_slide_avg = -1
     inc_slide = 0
     
-    fig, ax = plt.subplots()
-    (rects,) = ax.bar(range(beadCount), [5,5,5,5,5,5,5,5,5], animated = True)
-    plt.show(block=False)
+    # fig, ax = plt.subplots()
+    # (rects,) = ax.bar(range(beadCount), [5,5,5,5,5,5,5,5,5], animated = True)
+    # plt.show(block=False)
     while True:
         newData = pipeConnection.recv()
         if newData == "END" or len(newData) < columns:
@@ -124,20 +124,20 @@ def processData(pipeConnection, fileName):
                     print(str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState))
 
                     # reset the background back in the canvas state, screen unchanged
-                    fig.canvas.restore_region(bg)
+                    # fig.canvas.restore_region(bg)
                     # update the artist, neither the canvas state nor the screen have changed
-                    for i in range(len(rects)):
-                        if (touchedState[i]==True):
-                            rects[i].set_height(50)
-                        else:
-                            rects[i].set_height(5)
-                    ax.draw_artist(rects)
-                    # copy the image to the GUI state, but screen might not be changed yet
-                    fig.canvas.blit(fig.bbox)
-                    # flush any pending GUI events, re-painting the screen if needed
-                    fig.canvas.flush_events()
-                    # you can put a pause in if you want to slow things down
-                    # plt.pause(.1)
+                    # for i in range(len(rects)):
+                    #     if (touchedState[i]==True):
+                    #         rects[i].set_height(50)
+                    #     else:
+                    #         rects[i].set_height(5)
+                    # ax.draw_artist(rects)
+                    # # copy the image to the GUI state, but screen might not be changed yet
+                    # fig.canvas.blit(fig.bbox)
+                    # # flush any pending GUI events, re-painting the screen if needed
+                    # fig.canvas.flush_events()
+                    # # you can put a pause in if you want to slow things down
+                    # # plt.pause(.1)
      
 
             # Establish headers
