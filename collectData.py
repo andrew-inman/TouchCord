@@ -59,10 +59,11 @@ def processData(pipeConnection, fileName):
     plt.ion()
     rects = ax.bar(range(beadCount), y, align= 'center', animated = True)
     plt.tight_layout()    
+    fig.canvas.draw()
     ax.set_xlabel("Beads")
     ax.set_ylabel("Capacitance")
     ax.set_title("Visual of Touched Beads in Interface")
-    
+    plt.show()
 
     while True:
         newData = pipeConnection.recv()
@@ -137,9 +138,7 @@ def processData(pipeConnection, fileName):
                             rects[i].set_height(50)
                         else:
                             rects[i].set_height(5)
-                    fig.canvas.draw()
-                    fig.canvas.flush_events()
-                    time.sleep(1)
+                    plt.pause(0.001)
 
      
 
