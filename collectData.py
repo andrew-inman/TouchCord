@@ -5,7 +5,7 @@ import multiprocessing
 import pandas as pd
 import numpy as np
 from gestureFunctions import *
-import pylab
+from BlitManager import *
 
 # Read serial data from the Arduino.
 # Put the read data (one row at a time) into a pipe for the processData
@@ -54,8 +54,24 @@ def processData(pipeConnection, fileName):
     inc_slide = 0
     
     fig, ax = plt.subplots()
-    rects = ax.bar(range(beadCount), np.ones(beadCount)*50) 
-
+    (rects,) = ax.bar(range(beadCount), np.ones(beadCount)*50, animated = True) 
+    plt.show(block=False)
+    plt.pause(0.1)
+    bg = fig.canvas.copy_from_bbox(fig.bbox)
+    ax.draw_artist(rects)
+    fr_number = ax.annotate(
+    "0",
+    (0, 1),
+    xycoords="axes fraction",
+    xytext=(10, -10),
+    textcoords="offset points",
+    ha="left",
+    va="top",
+    animated=True,
+    )
+    bm = BlitManager(fig.canvas, [rects, fr_number])
+    
+    plt.show(block=False)
     while True:
         newData = pipeConnection.recv()
         if newData == "END" or len(newData) < columns:
@@ -124,13 +140,12 @@ def processData(pipeConnection, fileName):
                     print(str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState))
 
                     
-                    for i in range(len(rects)):
+                    for i in range(len(rects[0])):
                         if (touchedState[i]==True):
-                            rects[i].set_height(50)
+                            rects[0][i].set_height(50)
                         else:
-                            rects[i].set_height(5)
-                    fig.canvas.draw()
-                    plt.pause(0.001)
+                            rects[0][i].set_height(5)
+                    bm.update()
      
 
             # Establish headers
