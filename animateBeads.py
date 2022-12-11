@@ -1,7 +1,7 @@
 import tkinter
 import time
 
-width = 600
+width = 1000
 height = 400
 beadPosition = [
     (100, 100),
@@ -9,10 +9,10 @@ beadPosition = [
     (300, 100),
     (400, 100),
     (500, 100),
-    (150, 200),
-    (250, 200),
-    (350, 200),
-    (450, 200)
+    (600, 100),
+    (700, 100),
+    (800, 100),
+    (900, 100)
 ]
 maxRadius = 50
 
@@ -57,9 +57,9 @@ def drawBeads(Window, canvas, gestureDict):
     if gestureDict["slide"] != 0:
         if gestureDict["slide"] > 0:
             arrow = canvas.create_line(
-                215, # X start
+                415, # X start
                 300, # Y start
-                385, # X end
+                585, # X end
                 300, # Y end
                 width = 20,
                 arrow = tkinter.LAST,
@@ -68,9 +68,9 @@ def drawBeads(Window, canvas, gestureDict):
             )
         else:
             arrow = canvas.create_line(
-                385, # X start
+                585, # X start
                 300, # Y start
-                215, # X end
+                415, # X end
                 300, # Y end
                 width = 20,
                 arrow = tkinter.LAST,
@@ -79,7 +79,7 @@ def drawBeads(Window, canvas, gestureDict):
             )
 
     if gestureDict["twist"]:
-        twistIcon_X = 125
+        twistIcon_X = 325
         twistIcon_Y = 275
         twistIconRadius = 30
         arrowHeadLen = 15
@@ -130,9 +130,9 @@ def drawBeads(Window, canvas, gestureDict):
 
     if gestureDict["grab"]:
         rect = canvas.create_rectangle(
-            420,
+            620,
             275,
-            500,
+            700,
             325,
             fill = "#0072E2",
             outline = "#0072E2"
