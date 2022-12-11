@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib as mp
 from matplotlib import pyplot as plt
+import math
 
 def smooth (data, window):
     cols = data.shape[1]
@@ -53,8 +54,7 @@ def twistDetect (data, baselines, twistWindow = 10, twistThreads = [10, 11, 12],
         return True
     else:
         return False
-        
-        
+ 
 def slideDet(data, prev_slide_avg, inc_slide, baselines, beadCount):
     data = pinchDetect(data, baselines, beadCount)
     for row in data:
@@ -84,11 +84,47 @@ def slideDet(data, prev_slide_avg, inc_slide, baselines, beadCount):
 
 
 
-def pinchDetect(data, baseline, beadCount = 5):
-    touchedState = data[-1, 1:beadCount + 1] < (baseline[1:beadCount + 1] - 2)
+def pinchDetect(data, baseline, beadCount = 9):
+    dataShape = np.shape(data)
+    if len(dataShape) == 1: # If one dimensional (useful when called by slideDetect)
+        touchedState = data[1:beadCount + 1] < (baseline[1:beadCount + 1] - 2)
+    else:
+        touchedState = data[-1, 1:beadCount + 1] < (baseline[1:beadCount + 1] - 2)
     return touchedState
 
-def grab(data, baseline, beadCount =5):
+def slideDetect(data, baseline, beadCount = 9, window = 10, beadsPerSlide = 4, compliance = 0.6):
+
+    # Tunable params:
+    # compliance is fraction of consecutive difference that have to follow the rule of increasing or decreasing in index. For example, if the window size is 10, this means that 7 (compliance * (window - 1)) of the 9 consecutive differences have to follow the rule that (index + 1) - index is increasing or staring the same.
+    # beadsPerSlide is approximately the number of beads that have to be covered for a slide to be counted. It is compared against the sum of all of the consecutive differences in average touched indices.
+
+    averageTouchIndices = []
+    for i in range(window,1,-1): # Iterate in reverse so your touchStateWindow goes from oldest to most recent
+        thisPinchState = pinchDetect(data[-i,:], baseline = baseline, beadCount = beadCount)
+        
+        thisPinchStateNumpy = np.array(thisPinchState)
+        touchedIndices = np.where(thisPinchStateNumpy)[0]
+        if len(touchedIndices) != 0: # Only append if an index is actually detected. If index not detected, where returns empty list
+            averageTouchIndex = np.mean(touchedIndices)
+            averageTouchIndices.append(averageTouchIndex)
+
+    if len(averageTouchIndices) == 0: # If beads not touched within window, no slide detected. Return 0
+        return 0
+
+    diff = [averageTouchIndices[i] - averageTouchIndices[i - 1] for i in range(1,len(averageTouchIndices))]
+    totalDiff = np.sum(diff) # This is the total "path" of touches within the window. Used to see if over the entire window, the touch index has increased or decreased overall. More reliable than just checking the indices of the first and last sample in the window in case those samples are anomalous.
+
+    complianceCount = int(compliance * (window - 1))
+    diff = np.array(diff)
+
+    if totalDiff <= -1 * beadsPerSlide and np.count_nonzero(np.where(diff <= 0)[0]) >= complianceCount:
+        return -1
+    elif totalDiff >= beadsPerSlide and np.count_nonzero(np.where(diff >= 0)[0]) >= complianceCount:
+        return 1
+    else:
+        return 0
+
+def grab(data, baseline, beadCount = 5):
     #get true false array created in pinch
     tf_array = pinchDetect(data, baseline, beadCount)
     search_val = [True, True, True] #search for atleast 3 beads being touched
@@ -97,4 +133,3 @@ def grab(data, baseline, beadCount =5):
         if ((tf_array[i] and tf_array[i+1] and tf_array[i+2]) == True):
             return True
     return False
-

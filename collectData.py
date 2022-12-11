@@ -7,6 +7,7 @@ import numpy as np
 from gestureFunctions import *
 from BlitManager import *
 from sys import stdout
+from animateBeads import *
 
 # Read serial data from the Arduino.
 # Put the read data (one row at a time) into a pipe for the processData
@@ -45,14 +46,24 @@ def processData(pipeConnection, fileName):
     baselinesSet = False
     numpyArrayStarted = False
     currentTime = 0 # Timestamp of current datapoint
-    touchedPrevState = [False, False, False, False, False]
     touchedState = []
-    twistPrevState = False
     twistState = False
     grabState = False
+
+    prevGestureState = {
+        "touchState": [False, False, False, False, False, False, False, False, False],
+        "slide": 0,
+        "twist": False,
+        "grab": False
+    }
+
     beadCount = 9
     prev_slide_avg = -1
     inc_slide = 0
+
+    # Initialize Display:
+    window = createWindow()
+    canvas = createCanvas(window)
     
     # fig, ax = plt.subplots()
     # (rects,) = ax.bar(range(beadCount), [5,5,5,5,5,5,5,5,5], animated = True)
@@ -106,25 +117,33 @@ def processData(pipeConnection, fileName):
                 if baselinesSet:
                     # Check for pinches:
                     touchedState = pinchDetect(numpyArray, baselines, beadCount)
-                    #if not all(touchedState == touchedPrevState):
-                    #    print(touchedState)
-                    #    touchedPrevState = touchedState
 
                     # Check for grabs:
                     grabState = grab(numpyArray, baselines, beadCount)
 
                     # Check for slides:
-                    slideState = slideDet(numpyArray[-10:], prev_slide_avg, inc_slide,baselines,beadCount)
+                    slideState = slideDetect(numpyArray, baselines, beadCount, window = 20, beadsPerSlide = 4, compliance = 0.6)
 
                     # Check for twists:
                     twistState = twistDetect(numpyArray, baselines, twistWindow = 20)
-                    #if twistState != twistPrevState:
-                    #    print("Twist: " + str(twistState))
-                    #    twistPrevState = twistState
-                    #+ " Twist: " + str(twistState) 
-                    print("\r" + str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState), end = "")
-                    stdout.flush()
-                    stdout.write("\n")
+
+                    gestureState = {
+                        "touchState": touchedState,
+                        "slide": slideState,
+                        "twist": twistState,
+                        "grab": grabState
+                    }
+
+                    #if gestureState != prevGestureState:
+                    drawBeads(window, canvas, gestureState)
+                    time.sleep(0.01)
+                    #    prevGestureState = gestureState
+                    
+                    
+                    # Uncomment for command-line display
+                    # print("\r" + str(touchedState) + " Grabbed: " + str(grabState) + " Slide: " + str(slideState) + " Twist: " + str(twistState), end = "")
+                    # stdout.flush()
+                    # stdout.write("\n")
 
                     # reset the background back in the canvas state, screen unchanged
                     # fig.canvas.restore_region(bg)
