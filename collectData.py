@@ -13,7 +13,7 @@ from animateBeads import *
 # Put the read data (one row at a time) into a pipe for the processData
 def getData(pipeConnection):
     # Set up arduino
-    arduinoSerialObject = serial.Serial(port = 'COM3', baudrate = 9600, timeout = 1)
+    arduinoSerialObject = serial.Serial(port = 'COM11', baudrate = 9600, timeout = 1)
     
     while True:
         try:
